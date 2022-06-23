@@ -35,7 +35,7 @@ Reset: \033[0m
 #define null NULL
 #define MAX_STRING 250
 #define MAX_LINE 1000
-#define  INF 100000000
+#define  INF 99999
 
 
 
@@ -205,6 +205,8 @@ int getIndex(String cityName, pAvl T) {
     if (T == NULL) {
         return -1;
     }
+//    printf("%s\n", cityName);
+
     if (strcmp(cityName, T->cityName) < 0) {
         return getIndex(cityName, T->left);
     }
@@ -235,46 +237,10 @@ int getVsize(pAvl t) {
         dummy = getVsize(t->right);
 
     }
+    printf("\n");
     return V;
 
 }
-
-
-// ======================================================== HAS FUNCTIONS
-
-
-//
-//int hash1(int index) { // QUADRATIC
-//
-//    if (table1[index /*% TABLE_CAP*/].flag ==INF) {
-//        return index;
-//    }
-//
-//    int i = 1;
-//    int newIndx = (index + i * i) % V;
-//
-//    while (table1[newIndx].flag == 1) {
-//        i++;
-//        newIndx = (index + i * i) % V;
-//    }
-//    return newIndx;
-//
-//
-//}
-//
-//int strHash1(char *s) {
-//    int hashSum = 0;
-//
-//    while (*s != '\0') {
-//        hashSum = (hashSum << 5) + *(s++);
-//    }
-//
-//    return abs(hashSum % V);
-//
-//
-//}
-
-
 
 
 //---------------------------------------------GLOBAL VARIABLES-------------------------------------------------------------------------
@@ -299,6 +265,9 @@ void bold();
 
 void art();
 void readV();
+
+void assignToGraph(int Graph[V][V]);
+
 
 
 
@@ -325,10 +294,10 @@ int main() {
     }
 
 
-    int graph[V][V]; //graph[i][j] = x is the edge from i to j
+    int Graph[V][V]; //Graph[i][j] = x is the edge from i to j
     for (int i = 0; i < V; ++i) {
         for (int j = 0; j < V; ++j) {
-            graph[i][j] = INF;
+            Graph[i][j] = INF;
         }
 
     }
@@ -348,6 +317,14 @@ int main() {
         scanf("%d", &selection);
 
         if (selection == 1) {
+
+            assignToGraph(Graph);
+            for (int i = 0; i < V; ++i) {
+                for (int j = 0; j < V; ++j) {
+                    printf("%d\t", Graph[i][j]);
+                }
+                printf("\n");
+            }
 
         }
         else if (selection == 2) {
@@ -537,5 +514,33 @@ void readV() {
     }
 
     fclose(in);
+}
+
+void assignToGraph(int Graph [V][V] ) {
+    FILE *in = fopen("cities.txt", "r");
+    String  city1, city2 ;
+    String  strCost;
+
+    char * num;
+
+
+    while (fscanf(in, "%s%s%s", city1,city2,strCost) != EOF) {
+
+        num = strtok(strCost, "[Kk][Mm]"); // capital K or k for kilometers and M or m for miters
+        int cost = atoi(num);
+
+//        printf("cost : %d\n", cost);
+
+
+        Graph[getIndex(city1, SET)][getIndex(city2, SET)] = cost;
+        Graph[getIndex(city2, SET)][getIndex(city1, SET)] = cost;
+
+    }
+
+
+    fclose(in);
+
+
+
 }
 
