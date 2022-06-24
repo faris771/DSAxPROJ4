@@ -286,6 +286,8 @@ void cmd2();
 
 void dijkstra(int Graph[V][V], int src, String allCities);
 
+//---------------------------------------------DRIVER FUNCTION -------------------------------------------------------------------------
+
 int main() {
 
     readV();
@@ -313,7 +315,9 @@ int main() {
 
     welcome();
     int selection;
-
+    String srcCity;
+    String destCity;
+    int srcIndx;
     while (true) {
         menu();
         scanf("%d", &selection);
@@ -331,9 +335,8 @@ int main() {
         }
         else if (selection == 2) {
             printf("PLEASE ENTER SOURCE CITY\n");
-            String srcCity;
             scanf("%s", srcCity);
-            int srcIndx = getIndex(srcCity, SET);
+            srcIndx = getIndex(srcCity, SET);
 
             
             
@@ -353,6 +356,52 @@ int main() {
         }
 
         else if (selection == 3) {
+
+            printf("PLEASE ENTER DESTINATION CITY\n");
+            scanf("%s", destCity);
+            int destIndx = getIndex(destCity, SET);
+            if (destIndx == -1) {
+                red();
+                printf("\nDESTINATION CITY NOT FOUND\n");
+                reset();
+                continue;
+
+            }
+            printf("shortest paths from %s to %s : \n", srcCity, destCity);
+            dijkstra(Graph, srcIndx, allCities);
+            int src = getIndex(srcCity, SET);
+            int dest = getIndex(destCity, SET);
+            printf("%s to %s : %d\n", srcCity, destCity, Graph[src][dest]);
+
+
+        }
+
+
+        else if (selection == 4) {
+            printf("PLEASE ENTER SOURCE CITY\n");
+            String srcCity;
+            scanf("%s", srcCity);
+            int srcIndx = getIndex(srcCity, SET);
+            if (srcIndx == -1) {
+                red();
+                printf("\nSOURCE CITY NOT FOUND\n");
+                reset();
+                continue;
+
+            }
+            printf("PLEASE ENTER DESTINATION CITY\n");
+            String destCity;
+            scanf("%s", destCity);
+            int destIndx = getIndex(destCity, SET);
+            if (destIndx == -1) {
+                red();
+                printf("\nDESTINATION CITY NOT FOUND\n");
+                reset();
+                continue;
+
+            }
+            printf("shortest paths from %s to %s : \n", srcCity, destCity);
+            dijkstra(Graph, srcIndx, allCities);
 
 
         }
