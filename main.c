@@ -38,7 +38,6 @@ Reset: \033[0m
 #define  INF 99999
 
 
-
 typedef long long ll;
 
 typedef char String[MAX_STRING];
@@ -61,7 +60,6 @@ typedef struct AVLnode {
 
 
 } AVLnode;
-
 
 
 int height(pAvl P) {
@@ -175,7 +173,7 @@ pAvl insert(AVLnode treeNode, pAvl T) {
             }
         }
     }
-    else{
+    else {
 
         T->height = max(height(T->left), height(T->right)) + 1;
         return T;
@@ -219,22 +217,25 @@ int getIndex(String cityName, pAvl T) {
 }
 
 
-pAvl SET =  null;
+pAvl SET = null;
 
 int cnt = 0;
-int getVsize(pAvl t) {
+
+int getVsize(pAvl t, String CITITIES) {
 
     int dummy = 0;
     if (t != NULL) {
-        dummy = getVsize(t->left);
-        t -> indx = cnt;
+        dummy = getVsize(t->left, CITITIES);
+        t->indx = cnt;
         fprintf(stdout, "%s %d\t",
                 t->cityName, t->indx);
+        strcat(CITITIES, t->cityName);
+        strcat(CITITIES, "\t");
 
         cnt++;
 
         V++;
-        dummy = getVsize(t->right);
+        dummy = getVsize(t->right, CITITIES);
 
     }
     printf("\n");
@@ -250,48 +251,49 @@ int getVsize(pAvl t) {
 void line();
 
 void welcome();
+
 void menu();
+
 void red();
+
 void reset();
+
 void green();
+
 void blue();
+
 void yellow();
+
 void purple();
+
 void orange();
+
 void pink();
+
 void white();
+
 void black();
+
 void bold();
 
 void art();
+
 void readV();
 
 void assignToGraph(int Graph[V][V]);
 
+void cmd2();
 
-
-
+void dijkstra(int Graph[V][V], int src, String allCities);
 
 int main() {
 
     readV();
     int tmpV = 0;
-    int dummy = getVsize(SET);
+    String allCities = "";
+    int dummy = getVsize(SET, allCities);
+    printf("all cities: %s\n", allCities);
     // essential arrays
-
-    int parent[V] ;//parent[i] = parent of i
-    for (int i = 0; i < V; ++i) {
-        parent[i] = -1;
-    }
-
-    bool visited [V];//visited[i] = 1 if vertex i is visited
-    for (int i = 0; i < V; ++i) {
-        visited[i] = false;
-    }
-    int distance [V]; //distance from source (VALUE)
-    for (int i = 0; i < V; ++i) {
-        distance[i] = INF;
-    }
 
 
     int Graph[V][V]; //Graph[i][j] = x is the edge from i to j
@@ -312,7 +314,7 @@ int main() {
     welcome();
     int selection;
 
-    while(true) {
+    while (true) {
         menu();
         scanf("%d", &selection);
 
@@ -328,9 +330,28 @@ int main() {
 
         }
         else if (selection == 2) {
+            printf("PLEASE ENTER SOURCE CITY\n");
+            String srcCity;
+            scanf("%s", srcCity);
+            int srcIndx = getIndex(srcCity, SET);
 
+            
+            
+            
+            if (srcIndx == -1) {
+                red();
+                printf("\nSOURCE CITY NOT FOUND\n");
+                reset();
+                continue;
+
+            }
+//            printf("%s\n", allCities);
+            printf("shortest paths from %s to : \n", srcCity);
+
+            dijkstra(Graph, srcIndx, allCities);
 
         }
+
         else if (selection == 3) {
 
 
@@ -358,33 +379,24 @@ int main() {
         }
 
 
-
-
-
     }
 
 
 }
 
 
-
-
-
-
-
-
-
-
-
 void green() {
     printf("\033[32m");
 }
+
 void red() {
     printf("\033[31m");
 }
+
 void blue() {
     printf("\033[34m");
 }
+
 void reset() {
     printf("\033[0m");
 }
@@ -400,18 +412,23 @@ void line() {
 void yellow() {
     printf("\033[33m");
 }
+
 void black() {
     printf("\033[30m");
 }
+
 void white() {
     printf("\033[37m");
 }
+
 void pink() {
     printf("\033[35m");
 }
+
 void orange() {
     printf("\033[33m");
 }
+
 void purple() {
     printf("\033[35m");
 }
@@ -498,7 +515,7 @@ void readV() {
     String city2;
     String cost;
 
-    while (fscanf(in, "%s%s%s", city1,city2,cost) != EOF) {
+    while (fscanf(in, "%s%s%s", city1, city2, cost) != EOF) {
         pAvl tmpNode1 = malloc(sizeof(AVLnode));
         strcpy(tmpNode1->cityName, city1);
 
@@ -516,15 +533,15 @@ void readV() {
     fclose(in);
 }
 
-void assignToGraph(int Graph [V][V] ) {
+void assignToGraph(int Graph[V][V]) {
     FILE *in = fopen("cities.txt", "r");
-    String  city1, city2 ;
-    String  strCost;
+    String city1, city2;
+    String strCost;
 
-    char * num;
+    char *num;
 
 
-    while (fscanf(in, "%s%s%s", city1,city2,strCost) != EOF) {
+    while (fscanf(in, "%s%s%s", city1, city2, strCost) != EOF) {
 
         num = strtok(strCost, "[Kk][Mm]"); // capital K or k for kilometers and M or m for miters
         int cost = atoi(num);
@@ -541,6 +558,87 @@ void assignToGraph(int Graph [V][V] ) {
     fclose(in);
 
 
+}
+
+void cmd2() {
+    printf("PLEASE ENTER SOURCE CITY\n");
+    String srcCity;
+    scanf("%s", srcCity);
+
+
+}
+
+void dijkstra(int Graph[V][V], int src, String allCities) {
+    int dist[V];
+    bool visited[V];
+    int parent[V];
+    int i, j;
+    int min;
+    int next;
+
+    for (i = 0; i <
+                V; i++) { // initialize the distance array and visited array to infinity and false respectively for all vertices
+        dist[i] = INF;
+        visited[i] = false;
+        parent[i] = -1;
+
+    }
+
+    dist[src] = 0; // source node is always 0 distance from itself
+    parent[src] = -1; // parent of source is set to -1 since source is the parent of itself
+
+
+    for (i = 0; i < V - 1; i++) { // run for V-1 times since we have already visited source node once in the beginning
+
+        // iterates over Dist array to find the minimum distance vertex available so far
+        min = INF;
+        for (j = 0; j < V; j++) { // run for all vertices to find the minimum distance vertex from the set of unvisited vertices and mark it as visited
+            if (visited[j] == false && dist[j] <= min) {
+                min = dist[j];
+                next = j; // next is the vertex with minimum distance from the set of unvisited vertices
+            }
+
+        }
+
+        visited[next] = true; // the minimum distance vertex is marked as visited
+
+        //        system("tr -s [:upper:] [:lower:] < cities.txt > cities.txt.tmp"); // convert all cities to lowercase
+//        system("cat cities.txt.tmp > cities.txt"); // copy the temporary file to the original file
+//
+        //
+
+
+        for (j = 0; j < V; j++) {
+            // update the distance array by comparing the distance of the vertex from the set of unvisited vertices with the distance of the vertex from the set of visited vertices
+            // comparing edges from the next vertex to all of its edges
+            //j represents the  index of the edges to 'next' in the Graph
+            if (visited[j] == false && Graph[next][j] && dist[next] != INF && dist[next] + Graph[next][j] < dist[j]) {
+                parent[j] = next;
+                dist[j] = dist[next] + Graph[next][j];
+
+            }
+
+        } // update the distance of all the vertices adjacent to the minimum distance vertex from the set of unvisited vertices
+
+
+    }
+
+    int z = 0;
+
+//    printf("tst all cit  %s\n", allCities);
+
+    char * tmp = strtok(allCities, "\t");
+//    printf("tmp %s\n", tmp);
+
+    while (tmp != NULL) {
+        printf("%s:", tmp);
+        printf("\t%d Km", dist[z]);
+        printf("\n");
+
+        tmp = strtok(NULL, "\t");
+        z++;
+    }
+    printf("\n");
 
 }
 
