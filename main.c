@@ -284,11 +284,18 @@ void assignToGraph(int Graph[V][V]);
 
 void cmd2();
 
-void dijkstra(int Graph[V][V], int src, String allCities);
+void
+dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[V]);
+
+
+void displayRoute(int parent[], int dist[], String strSrc, String strDest,
+                  String cityArray[V]);//display the route from source to destination
+
 
 //---------------------------------------------DRIVER FUNCTION -------------------------------------------------------------------------
 
 int main() {
+
 
     readV();
     int tmpV = 0;
@@ -296,6 +303,11 @@ int main() {
     int dummy = getVsize(SET, allCities);
     printf("all cities: %s\n", allCities);
     // essential arrays
+    String cityArray[V];
+
+    int dist[V];
+    bool visited[V];
+    int parent[V];
 
 
     int Graph[V][V]; //Graph[i][j] = x is the edge from i to j
@@ -327,6 +339,9 @@ int main() {
             assignToGraph(Graph);
             for (int i = 0; i < V; ++i) {
                 for (int j = 0; j < V; ++j) {
+                    if (i == j) {
+                        Graph[i][j] = 0; //no edge between same city
+                    }
                     printf("%d\t", Graph[i][j]);
                 }
                 printf("\n");
@@ -334,13 +349,17 @@ int main() {
 
         }
         else if (selection == 2) {
+//            for (int i = 0; i < V; ++i) {
+//                for (int j = 0; j < V; ++j) {
+//                    Graph[i][j] = INF;
+//                }
+//
+//            }
             printf("PLEASE ENTER SOURCE CITY\n");
             scanf("%s", srcCity);
             srcIndx = getIndex(srcCity, SET);
 
-            
-            
-            
+
             if (srcIndx == -1) {
                 red();
                 printf("\nSOURCE CITY NOT FOUND\n");
@@ -350,9 +369,10 @@ int main() {
             }
 //            printf("%s\n", allCities);
             printf("shortest paths from %s to : \n", srcCity);
+//            printf("all in main %s\n", allCities); WHAT IS LEFT AT THE END IS AKKA
 
-            dijkstra(Graph, srcIndx, allCities);
 
+            dijkstra(Graph, srcIndx, allCities, dist, visited, parent, cityArray);
         }
 
         else if (selection == 3) {
@@ -367,41 +387,7 @@ int main() {
                 continue;
 
             }
-            printf("shortest paths from %s to %s : \n", srcCity, destCity);
-            dijkstra(Graph, srcIndx, allCities);
-            int src = getIndex(srcCity, SET);
-            int dest = getIndex(destCity, SET);
-            printf("%s to %s : %d\n", srcCity, destCity, Graph[src][dest]);
-
-
-        }
-
-
-        else if (selection == 4) {
-            printf("PLEASE ENTER SOURCE CITY\n");
-            String srcCity;
-            scanf("%s", srcCity);
-            int srcIndx = getIndex(srcCity, SET);
-            if (srcIndx == -1) {
-                red();
-                printf("\nSOURCE CITY NOT FOUND\n");
-                reset();
-                continue;
-
-            }
-            printf("PLEASE ENTER DESTINATION CITY\n");
-            String destCity;
-            scanf("%s", destCity);
-            int destIndx = getIndex(destCity, SET);
-            if (destIndx == -1) {
-                red();
-                printf("\nDESTINATION CITY NOT FOUND\n");
-                reset();
-                continue;
-
-            }
-            printf("shortest paths from %s to %s : \n", srcCity, destCity);
-            dijkstra(Graph, srcIndx, allCities);
+            displayRoute(parent, dist, srcCity, destCity, cityArray);
 
 
         }
@@ -601,6 +587,7 @@ void assignToGraph(int Graph[V][V]) {
         Graph[getIndex(city1, SET)][getIndex(city2, SET)] = cost;
         Graph[getIndex(city2, SET)][getIndex(city1, SET)] = cost;
 
+
     }
 
 
@@ -608,19 +595,23 @@ void assignToGraph(int Graph[V][V]) {
 
 
 }
+//
+//void cmd2() {
+//    printf("PLEASE ENTER SOURCE CITY\n");
+//    String srcCity;
+//    scanf("%s", srcCity);
+//
+//
+//}
 
-void cmd2() {
-    printf("PLEASE ENTER SOURCE CITY\n");
-    String srcCity;
-    scanf("%s", srcCity);
+void
+dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[]) {
 
 
-}
 
-void dijkstra(int Graph[V][V], int src, String allCities) {
-    int dist[V];
-    bool visited[V];
-    int parent[V];
+//    int dist[V];
+//    bool visited[V];
+//    int parent[V];
     int i, j;
     int min;
     int next;
@@ -641,7 +632,8 @@ void dijkstra(int Graph[V][V], int src, String allCities) {
 
         // iterates over Dist array to find the minimum distance vertex available so far
         min = INF;
-        for (j = 0; j < V; j++) { // run for all vertices to find the minimum distance vertex from the set of unvisited vertices and mark it as visited
+        for (j = 0; j <
+                    V; j++) { // run for all vertices to find the minimum distance vertex from the set of unvisited vertices and mark it as visited
             if (visited[j] == false && dist[j] <= min) {
                 min = dist[j];
                 next = j; // next is the vertex with minimum distance from the set of unvisited vertices
@@ -676,18 +668,65 @@ void dijkstra(int Graph[V][V], int src, String allCities) {
 
 //    printf("tst all cit  %s\n", allCities);
 
-    char * tmp = strtok(allCities, "\t");
+    char *tmp = null;
 //    printf("tmp %s\n", tmp);
 
+    printf("all %s\n", allCities);
+
+    tmp = strtok(allCities, "\t");
     while (tmp != NULL) {
+//        printf("BOOOO2%s\n", tmp);
+
         printf("%s:", tmp);
         printf("\t%d Km", dist[z]);
         printf("\n");
-
+        strcpy(cityArray[z], tmp);
         tmp = strtok(NULL, "\t");
         z++;
     }
     printf("\n");
+    strcpy(allCities, "");
+
+    for (int k = 0; k < V; ++k) {
+        strcat(allCities, cityArray[k]);
+        strcat(allCities, "\t");
+    }
+
+}
+
+void displayRoute(int *parent, int *dist, String srcCity, String destCity, String cityArray[]) {
+
+    FILE *out = fopen("shortest_path.txt", "a");
+    if (out == null) {
+        red();
+        printf("COULDN'T OPEN THE OUTPUT FILE\n");
+        reset();
+    }
+
+    int parentVertix = parent[getIndex(destCity, SET)];
+//    printf("parent vert = %d\n",parentVertix);
+    printf("%s", destCity);
+    fprintf(out, "%s", destCity);
+
+    int d1, d2;
+    d1 = getIndex(destCity, SET);
+    int total = 0;
+    while (parentVertix != -1) {
+        total += abs(dist[d1] - dist[parentVertix]);
+
+        printf("  (%dKm)<-  %s ", abs(dist[d1] - dist[parentVertix]), cityArray[parentVertix]);
+        fprintf(out, "  (%dKm)<-  %s ", abs(dist[d1] - dist[parentVertix]), cityArray[parentVertix]);
+
+        d1 = parentVertix;
+        parentVertix = parent[parentVertix];
+
+    }
+    printf("\n");
+
+    printf("total destination : %d \n", total);
+
+    fprintf(out, "\t| (total destination : %d) \n", total);
+    fclose(out);
 
 }
 
