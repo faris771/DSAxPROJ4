@@ -1,4 +1,5 @@
 /**
+ *
  * AUTHOR:FARIS ABUFARHA
  * ID:1200546
  * SEC:3
@@ -7,6 +8,8 @@
  * COMPILER: gcc
  * OS: LINUX UBUNTU
  */
+
+//COMMIT # 4
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -245,9 +248,6 @@ int getVsize(pAvl t, String CITITIES) {
 }
 
 
-
-
-
 void line();
 
 void welcome();
@@ -283,7 +283,8 @@ void readV();
 void assignToGraph(int Graph[V][V]); //assigns the values to the graph
 
 
-void dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[V]);
+void
+dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[V]);
 
 
 void displayRoute(int parent[], int dist[], String strSrc, String strDest,
@@ -329,7 +330,8 @@ int main() {
     String destCity;
     int srcIndx;
 
-
+    bool selected = false;
+    bool selected2 = false;
     while (true) {
         menu();
         printf("CITIES TO TRAVERSE : \n");
@@ -337,6 +339,7 @@ int main() {
         scanf("%d", &selection);
 
         if (selection == 1) {
+            selected = true;
 
             assignToGraph(Graph);
             for (int i = 0; i < V; ++i) {
@@ -351,6 +354,14 @@ int main() {
 
         }
         else if (selection == 2) {
+            selected2 = true;
+
+
+            if (!selected) {
+                printf("Please load graph first\n");
+                continue;
+
+            }
 //            for (int i = 0; i < V; ++i) {
 //                for (int j = 0; j < V; ++j) {
 //                    Graph[i][j] = INF;
@@ -374,10 +385,24 @@ int main() {
 //            printf("all in main %s\n", allCities); WHAT IS LEFT AT THE END IS AKKA
 
 
-            dijkstra(Graph, srcIndx, allCities, dist, visited, parent, cityArray);//dijkstra algorithm to find the shortest path from source to destination city
+            dijkstra(Graph, srcIndx, allCities, dist, visited, parent,
+                     cityArray);//dijkstra algorithm to find the shortest path from source to destination city
         }
 
         else if (selection == 3) {
+            if (!selected2) {
+                printf("Please choose source destination f first\n");
+                continue;
+
+            }
+
+
+            if (!selected) {
+                printf("Please load graph first\n");
+                continue;
+
+            }
+
 
             printf("PLEASE ENTER DESTINATION CITY\n");
             scanf("%s", destCity);
@@ -394,7 +419,8 @@ int main() {
 
         }
 
-        else if (selection == 4) { // note: we auto save to the file each time in 3rd selection number 4 just exits the program
+        else if (selection ==
+                 4) { // note: we auto save to the file each time in 3rd selection number 4 just exits the program
             //do stuff
 
 
@@ -606,7 +632,8 @@ void assignToGraph(int Graph[V][V]) {
 //
 //}
 
-void dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[]) {
+void
+dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visited[V], int parent[V], String cityArray[]) {
 
 
 
@@ -689,7 +716,8 @@ void dijkstra(int Graph[V][V], int src, String allCities, int dist[V], bool visi
     strcpy(allCities, ""); // clear the string
 
     for (int k = 0; k < V; ++k) {
-        strcat(allCities, cityArray[k]); // concatenate the cities to the string again cuz it changes when we split it by tabs
+        strcat(allCities,
+               cityArray[k]); // concatenate the cities to the string again cuz it changes when we split it by tabs
         strcat(allCities, "\t"); // add a tab after each city
     }
 
@@ -705,7 +733,8 @@ void displayRoute(int *parent, int *dist, String srcCity, String destCity, Strin
         reset();
     }
 
-    int parentVertix = parent[getIndex(destCity, SET)]; // get the parent of the destination city from the parent array and set it to parentVertix variable (the parent of the destination city)
+    int parentVertix = parent[getIndex(destCity,
+                                       SET)]; // get the parent of the destination city from the parent array and set it to parentVertix variable (the parent of the destination city)
 //    printf("parent vert = %d\n",parentVertix);
     printf("%s", destCity);
     fprintf(out, "%s", destCity);
@@ -713,7 +742,8 @@ void displayRoute(int *parent, int *dist, String srcCity, String destCity, Strin
     int d1;
     d1 = getIndex(destCity, SET);
     int total = 0;
-    while (parentVertix != -1) { // while the parent of the destination city is not -1 ( the destination city is not the source city)
+    while (parentVertix !=
+           -1) { // while the parent of the destination city is not -1 ( the destination city is not the source city)
         total += abs(dist[d1] - dist[parentVertix]);
 
         printf("  (%dKm)<-  %s ", abs(dist[d1] - dist[parentVertix]), cityArray[parentVertix]); //
@@ -725,9 +755,9 @@ void displayRoute(int *parent, int *dist, String srcCity, String destCity, Strin
     }
     printf("\n");
 
-    printf("total destination : %d \n", total);
+    printf("total destination : %dKm \n", total);
 
-    fprintf(out, "\t| (total destination : %d) \n", total);
+    fprintf(out, "\t| (total destination : %dKm) \n", total);
     fclose(out);
 
 }
