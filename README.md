@@ -1,4 +1,4 @@
-##DIJKSTRA ALGORITHIM TO FIND SHORTEST PATH BETWEEN CITIES
+## DIJKSTRA ALGORITHIM TO FIND SHORTEST PATH BETWEEN CITIES
 
 ![Screenshot from 2022-06-25 09-59-08](https://user-images.githubusercontent.com/70337488/175762504-cdc18a11-e8f7-4a9d-a811-54109c7bded7.png)  
 ![Screenshot from 2022-06-25 09-57-26](https://user-images.githubusercontent.com/70337488/175762447-2a6ca44b-89fa-480d-8e21-b91a9003657e.png)
